@@ -123,8 +123,9 @@ void setup(void)
 
 #endif
 
-tone(BUZZER_PIN, 3900, 300);
+tone(BUZZER_PIN, 3900, 1000);
 digitalWrite(ledPin, HIGH);
+delay(1000);
 digitalWrite(ledPin, LOW);
 
 #ifdef LCD
@@ -311,7 +312,7 @@ void loop(void)
     
     //header
     lcd.TextGoTo(0,0);     
-    sprintf(line, "  Mode: %s   %02d:%02d:%02d   %02d-%02d-%02d", modes[mode],now.hour(), now.minute(), now.second(), now.day(), now.month(), now.year() );
+    sprintf(line, "  BEEP: %s   %02d:%02d:%02d   %02d-%02d-%02d", modes[mode],now.hour(), now.minute(), now.second(), now.day(), now.month(), now.year() );
     printLine(line);
     lcd.TextGoTo(0,1);
     lcd.writeString("----------------------------------------");
@@ -525,9 +526,9 @@ void drawMenu(void){
       if(menuState + i < maxDoors){
          DateTime time (doors[menuState + i].stamp); 
          if(doors[menuState + i].stamp){
-           sprintf(line, "%s %+3s     %s    %02d:%02d %02d-%02d-%02d" ,(!i ? "-->":"   "), doors[menuState + i].name, (doors[menuState + i].alarm ? "Enabled":"Off    "), time.hour(), time.minute(), time.day(), time.month(), time.year());
+           sprintf(line, "%s %+3s     %s    %02d:%02d %02d-%02d-%02d" ,(!i ? "-->":"   "), doors[menuState + i].name, (doors[menuState + i].alarm ? "Always ":"Night  "), time.hour(), time.minute(), time.day(), time.month(), time.year());
          }else{
-            sprintf(line, "%s %+3s     %s" ,(!i ? "-->":"   "), doors[menuState + i].name, (doors[menuState + i].alarm ? "Enabled":"Off    "));
+            sprintf(line, "%s %+3s     %s" ,(!i ? "-->":"   "), doors[menuState + i].name, (doors[menuState + i].alarm ? "Always ":"Night  "));
          }
          printLine(line);       
           
