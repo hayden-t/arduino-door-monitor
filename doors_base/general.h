@@ -32,9 +32,9 @@ cast casts[maxCast] = {
 */  
 
 char* modes[] = {
-       "None  ",
-       "All   ",
-       "Custom"
+       "NONE  ",
+       "ALL   ",
+       "CUSTOM"
  };
 
 const byte ledPin = A7;
