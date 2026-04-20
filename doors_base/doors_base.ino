@@ -257,8 +257,13 @@ void loop(void)
           Serial.print(" Room: ");
           Serial.print(doors[id].name);
 
-          if(alarmed)Serial3.println(doors[id].name);//send to esp for wifi broadcast
-          
+         
+          if(alarmed){
+            String esp_message =  String("{\"type\": \"doors\",\"door\": \"") + doors[id].name + "\"}";
+            Serial3.println(esp_message);//send to esp for wifi broadcast
+            Serial.println("Broadcast Door: "+ esp_message);
+          }
+
           reply:
           
              Serial.print(" - Sending Reply: ");
