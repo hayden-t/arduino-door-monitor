@@ -1,3 +1,4 @@
+
 #include "T6963.h"
 #include <RF24Network.h>
 #include <RF24.h>
@@ -10,9 +11,17 @@
 #include "doors.h"
 #include "general.h"
 
-#define CAST
-#define LCD
-#define SD
+//#define CAST //comment out to not load code
+//#define LCD //comment out to not load code
+//#define SD //comment out to not load code
+
+
+/*
+ * {"type": "settings","ssid": "WIFI_NAME","password": "","targets":["192.168.1.38"]}
+ * {"type": "doors","door": "Door1"}
+ * 
+ */
+//todo make script use this structs
 
 //#define LOW_PA
 #define MED_PA
@@ -62,7 +71,8 @@ RF24Network network(radio);
 
 void setup(void)
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
+  Serial3.begin(115200);//esp link
   
   Serial.print("[Base Startup] maxEvents:");
   Serial.print(maxEvents);
@@ -70,6 +80,8 @@ void setup(void)
   Serial.print(maxDoors);
   Serial.print(" FreeMem: ");
   Serial.println(freeRam());
+
+ 
    
   Wire.begin();  
   RTC.begin();
@@ -140,6 +152,9 @@ digitalWrite(ledPin, LOW);
     delay(200);
   }  
 #endif
+
+ Serial.println("Send serial message to test wifi broadcast...");
+
 }
 unsigned long loopTime = 0;
 unsigned long buttonTimer = 0;
@@ -161,7 +176,7 @@ int alarmsPlayed = ALARM_COUNT;
 
 void loop(void)
 {
-  
+
   if(buttonTimer > millis())buttonTimer = millis();//check for overflow
   if(castTimer > millis())castTimer = millis();//check for overflow
   if(castDelay > millis())castDelay = millis();//check for overflow
@@ -229,6 +244,8 @@ void loop(void)
           Serial.print(address);
           Serial.print(" Room: ");
           Serial.print(doors[id].name);
+
+          if(alarmed)Serial3.println(doors[id].name);//send to esp for wifi broadcast
           
           reply:
           
@@ -334,6 +351,21 @@ void loop(void)
     delay(500);
   }
 #endif
+
+//test script for esp broadcast
+  while (Serial.available()) {
+     digitalWrite(LED_BUILTIN, HIGH);
+     
+     String message = Serial.readString();
+     
+     Serial.print("Sending ESP Test: ");
+     Serial.println(message);
+     Serial3.println(message);
+      
+     digitalWrite(LED_BUILTIN, LOW);
+  }
+ //test script for esp broadcast
+
 }//end loop
 
 
@@ -740,4 +772,3 @@ void sendEvents(boolean force){  // cast recent 5 events
 
 #endif  
 }
-
