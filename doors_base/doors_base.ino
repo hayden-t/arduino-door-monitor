@@ -10,17 +10,22 @@
 #include <Button.h>
 #include "doors.h"
 #include "general.h"
+#include "settings.h" //wifi settings etc in here
 
 //#define CAST //comment out to not load code
 //#define LCD //comment out to not load code
 //#define SD //comment out to not load code
-
+//#define REPLIES //print to console replies from ESP
 
 /*
+ * setting set in settings.h (rename settings_example.h
  * {"type": "settings","ssid": "WIFI_NAME","password": "","targets":["192.168.1.38"]}
+ * example message format:
  * {"type": "doors","door": "Door1"}
  * 
  */
+
+ 
 //todo make script use this structs
 
 //#define LOW_PA
@@ -153,9 +158,16 @@ digitalWrite(ledPin, LOW);
   }  
 #endif
 
- Serial.println("Send serial message to test wifi broadcast...");
 
-}
+
+Serial.print("ESP settings sent:");
+Serial.println(settings);
+Serial3.println(settings);
+
+Serial.print("Example message:");
+Serial.println("{\"type\": \"doors\",\"door\": \"Door1\"}");
+
+}//end setup
 unsigned long loopTime = 0;
 unsigned long buttonTimer = 0;
 unsigned long castTimer = 0;
@@ -353,17 +365,30 @@ void loop(void)
 #endif
 
 //test script for esp broadcast
-  while (Serial.available()) {
+  while (Serial.available()) {//pass messages from console to esp
      digitalWrite(LED_BUILTIN, HIGH);
      
      String message = Serial.readString();
      
-     Serial.print("Sending ESP Test: ");
+     Serial.print("Sending ESP: ");
      Serial.println(message);
      Serial3.println(message);
       
      digitalWrite(LED_BUILTIN, LOW);
   }
+  
+  #ifdef REPLIES
+  //print replies from ESP
+  while (Serial3.available()) {
+     
+     String message = Serial3.readString();
+     
+     Serial.print("ESP: ");
+     Serial.println(message);
+
+  }
+  #endif
+  
  //test script for esp broadcast
 
 }//end loop
